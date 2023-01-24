@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import Item from "./components/Item";
+import { Item as ItemType, search } from "./services/item";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [query, setQuery] = useState("");
+    const [items, setItems] = useState<ItemType[]>([]);
+    return (
+        <div className="App">
+            <header className="App-header">
+                <p>FULLTEXT Search</p>
+                <p>Please enter a search term</p>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        search(query).then(setItems);
+                    }}
+                >
+                    <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                    />
+                    <button type="submit">Search</button>
+                </form>
+
+                <div>
+                    <p>Results:</p>
+                    <ul>
+                        {items.map((item) => (
+                            <li key={item.id}>
+                                <Item item={item} />
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </header>
+        </div>
+    );
 }
 
 export default App;
